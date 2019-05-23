@@ -1,0 +1,23 @@
+{
+  "name": "MDlunch-mailbot",
+  "description": "Send a MD-lunch notification e-mail using Sendgrid in Node.js on Google App Engine.",
+  "version": "0.0.1",
+  "private": true,
+  "license": "MIT",
+  "author": "kometaku",
+  "engines": {
+    "node": ">=10"
+  },
+  "scripts": {
+    "start": "node app.js",
+    "test": "repo-tools test app && mocha test/*.test.js"
+  },
+  "dependencies": {
+    "@sendgrid/client": "^6.3.0",
+    "body-parser": "^1.19.0",
+    "express": "^4.16.4",
+    "gm": "^1.23.1",
+    "iconv-lite": "^0.4.24",
+    "request-promise": "^4.2.4"
+  }
+}

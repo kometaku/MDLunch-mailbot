@@ -1,0 +1,5 @@
+cron:
+- description: "every weekday morning mailout"
+  url: /
+  schedule: every monday,tuesday,wednesday,thursday,friday 10:00
+  timezone: Asia/Tokyo
