@@ -10,7 +10,6 @@ root@cloudshell:~@ exit
 user@cloudshell:~@ git clone https://github.com/kometaku/MDLunch-mailbot.git
 user@cloudshell:~@ cd MDLunch-mailbot
 user@cloudshell:~@ npm install
-user@cloudshell:~@ npm install
 ```
 
 ## Testrun
