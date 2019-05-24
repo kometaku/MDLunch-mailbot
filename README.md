@@ -1,12 +1,26 @@
 # MDLunch-mailbot
 [MDLunch](https://www2.mdlife-md-lunch.com/itami2userhtml/order/XXeHcFaF9E/top.html)の本日の昼食をメールでお知らせします。
 
-## Install
+## 事前準備
 Google App Engineの環境を用意します。
+graphicsmagickをインストールしたカスタムイメージを作成し再起動します。
 ```
-user@cloudshell:~@ sudo su -
-root@cloudshell:~@ apt-get install graphicsmagick
-root@cloudshell:~@ exit
+user@cloudshell:~@ cloudshell env create-custom-image custom-image
+user@cloudshell:~@ cd custom-image
+user@cloudshell:~@ vi Dockerfile
+user@cloudshell:~@ cloudshell env build-local
+user@cloudshell:~@ cloudshell env run
+user@cloudshell:~@ git commit -a -m "Initial custom environment check-in."
+user@cloudshell:~@ git push origin master
+user@cloudshell:~@ cloudshell env push
+user@cloudshell:~@ cloudshell env update-default-image
+```
+### Dockerfile
+```
+RUN apt-get -y install graphicsmagick
+```
+## Install
+```
 user@cloudshell:~@ git clone https://github.com/kometaku/MDLunch-mailbot.git
 user@cloudshell:~@ cd MDLunch-mailbot
 user@cloudshell:~@ npm install
