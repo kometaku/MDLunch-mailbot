@@ -5,8 +5,10 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const request = require('request-promise');
 const iconv = require('iconv-lite');
-const fs = require('fs');
 const gm = require('gm');
+const fs = require('fs');
+const util = require("util");
+const writeFile = util.promisify(fs.writeFile);
 
 // The following environment variables are set by app.yaml (app.flexible.yaml or
 // app.standard.yaml) when running on Google App Engine,
@@ -33,7 +35,7 @@ function compositeImage(baseImagePath, setImagePath, dstImagePath) {
     try {
       gm(baseImagePath).composite(setImagePath).write(dstImagePath, function(err) {
         if(err) {
-          thrown(err);
+          throw(err);
 	}
 	  resolve();
       });
@@ -64,15 +66,13 @@ function poststr() {
     method: "GET",
     encoding: null
   }
-  request(blackimg).then(body => {
-    fs.writeFileSync('black_raw.jpg', body, 'binary');
-  });
-  request(whiteimg).then(body => {
-    fs.writeFileSync('white_raw.jpg', body, 'binary');
-  });
-  return compositeImage('black_raw.jpg', 'kuro.png', 'black.jpg')
-  .then(compositeImage('white_raw.jpg', 'siro.png', 'white.jpg'))
-  .then(function(){return request(menu)})
+  return request(blackimg)
+  .then(body => writeFile('black_raw.jpg', body, 'binary'))
+  .then(() => request(whiteimg))
+  .then(body => writeFile('white_raw.jpg', body, 'binary'))
+  .then(() => compositeImage('black_raw.jpg', 'kuro.png', 'black.jpg'))
+  .then(() => compositeImage('white_raw.jpg', 'siro.png', 'white.jpg'))
+  .then(() => request(menu))
   .then(body => {
     var decodestr, match, re;
     decodestr = iconv.decode(new Buffer.from(body, 'binary'), "SHIFT_JIS");
