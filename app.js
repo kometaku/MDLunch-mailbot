@@ -5,8 +5,8 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const request = require('request-promise');
 const iconv = require('iconv-lite');
-const gm = require('gm');
 const fs = require('fs');
+const jimp = require("jimp");
 const util = require("util");
 const writeFile = util.promisify(fs.writeFile);
 
@@ -31,19 +31,8 @@ function base64_encode(file) {
 }
 
 function compositeImage(baseImagePath, setImagePath, dstImagePath) {
-  return new Promise( function(resolve, reject) {
-    try {
-      gm(baseImagePath).composite(setImagePath).write(dstImagePath, function(err) {
-        if(err) {
-          throw(err);
-	}
-	  resolve();
-      });
-    }
-    catch (err) {
-      reject(err);
-    }
-  });
+  return Promise.all([jimp.read(baseImagePath),jimp.read(setImagePath)])
+  .then(image => {return image[0].composite(image[1], 0, 0).write(dstImagePath)})
 }
 
 function poststr() {
@@ -67,11 +56,11 @@ function poststr() {
     encoding: null
   }
   return request(blackimg)
-  .then(body => writeFile('black_raw.jpg', body, 'binary'))
+  .then(body => writeFile('/tmp/black_raw.jpg', body, 'binary'))
   .then(() => request(whiteimg))
-  .then(body => writeFile('white_raw.jpg', body, 'binary'))
-  .then(() => compositeImage('black_raw.jpg', 'kuro.png', 'black.jpg'))
-  .then(() => compositeImage('white_raw.jpg', 'siro.png', 'white.jpg'))
+  .then(body => writeFile('/tmp/white_raw.jpg', body, 'binary'))
+  .then(() => compositeImage('/tmp/black_raw.jpg', 'kuro.png', '/tmp/black.jpg'))
+  .then(() => compositeImage('/tmp/white_raw.jpg', 'siro.png', '/tmp/white.jpg'))
   .then(() => request(menu))
   .then(body => {
     var decodestr, match, re;
@@ -98,8 +87,8 @@ function poststr() {
 
 app.get('/', (req, res) => {
   poststr().then(str => {
-    var black_base64 = base64_encode('black.jpg');
-    var white_base64 = base64_encode('white.jpg');
+    var black_base64 = base64_encode('/tmp/black.jpg');
+    var white_base64 = base64_encode('/tmp/white.jpg');
     var timestamp = (new Date()).toISOString().replace(/[^0-9]/g, "");
     var request = {
       method: 'POST',
