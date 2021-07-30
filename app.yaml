@@ -4,3 +4,4 @@ env_variables:
   SENDGRID_API_KEY: your-sendgrid-api-key
   SENDGRID_SENDER: sender@example.com
   SENDGRID_TO: sendto_one@example.com,sendto_another@example.com
+  NODE_TLS_REJECT_UNAUTHORIZED: 0
