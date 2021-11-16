@@ -15,6 +15,7 @@ Google Cloud Platform Marketplaceを使用してSendGrid Emailサービスに登
 user@cloudshell:~@ export SENDGRID_API_KEY=your-api-key
 user@cloudshell:~@ export SENDGRID_SENDER=MDLunch@example.com
 user@cloudshell:~@ export SENDGRID_TO=yourmail@example.com
+user@cloudshell:~@ export NODE_TLS_REJECT_UNAUTHORIZED=0
 user@cloudshell:~@ npm start
 ```
 
